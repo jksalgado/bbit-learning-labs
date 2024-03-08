@@ -14,14 +14,16 @@
 
 import pika
 import os
+from producer_interface import mqProducerInterface
 
-class mqProducerInterface:
+
+class mqProducer(mqProducerInterface):
     def __init__(self, routing_key: str, exchange_name: str) -> None:
         # Save parameters to class variables
-        con_params = pika.URLParameters(os.environ["AMQP_URL"])
-        connection = pika.BlockingConnection(parameters=con_params)
+        self.con_params = pika.URLParameters(os.environ["AMQP_URL"])
+        self.connection = pika.BlockingConnection(parameters=self.con_params)
         # Call setupRMQConnection
-        self.setupRMQConnection(self)
+        self.setupRMQConnection()
 
         pass
 
@@ -40,7 +42,7 @@ class mqProducerInterface:
         self.channel.basic_publish(
             exchange="Exchange Name",
             routing_key="Routing Key",
-            body="Message",
+            body="Hello, World!",
         )
         # Close Channel
         self.channel.close()
@@ -48,3 +50,4 @@ class mqProducerInterface:
         self.connection.close()
     
         pass
+
