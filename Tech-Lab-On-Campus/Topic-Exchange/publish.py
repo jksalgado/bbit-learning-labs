@@ -21,28 +21,43 @@ from solution.producer_sol import mqProducer  # pylint: disable=import-error
 def main(ticker: str, price: float, sector: str) -> None:
     
     # Implement Logic to Create Routing Key from the ticker and sector variable -  Step 2
-    routingKey = f"Stock.{ticker}.{sector}"
-    routingKey.strip()
-    
-    
-    # Instantiates Producer Class
-    producer = mqProducer(routing_key=routingKey,exchange_name="Tech Lab Topic Exchange")
+    #
+    #                       WRITE CODE HERE!!!
+    #
 
 
-    # Implement Logic To Create a message variable from the ticker and price variable EG. "TSLA price is now $500" - Step 3
-    message = f"{ticker} is now ${price}"
+    # We'll first set up the connection and channel
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+    channel = connection.channel()
+
+    channel.exchange_declare(exchange='topic_logs', exchange_type='topic')
+    key = ticker + "." + sector
+
+    message = ' '.join(sys.argv[2]) or sys.argv[1]
+
+
+    channel.basic_publish(exchange='topic_logs', routing_key=key, body=message)
+
+    producer = mqProducer(routing_key=key,exchange_name="Tech Lab Topic Exchange")
+
+
+    # Implement Logic To Create a message variable from the variable EG. "TSLA price is now $500" - Step 3
+    #
+    #                       WRITE CODE HERE!!!
+    #
     
-    # Publishes Message
+    
     producer.publishOrder(message)
 
 if __name__ == "__main__":
 
     # Implement Logic to read the ticker, price and sector string from the command line and save them - Step 1
+    #
+    #                       WRITE CODE HERE!!!
+    #
 
     ticker = sys.argv[1]
     price = sys.argv[2]
     sector = sys.argv[3]
 
-    sys.exit(main(ticker, price, sector))
-
-
+    sys.exit(main(ticker,price,sector))
