@@ -26,19 +26,11 @@ def main(ticker: str, price: float, sector: str) -> None:
     #
 
 
-    # We'll first set up the connection and channel
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
-    channel = connection.channel()
-
-    channel.exchange_declare(exchange='topic_logs', exchange_type='topic')
     key = ticker + "." + sector
 
-    message = ' '.join(sys.argv[2]) or sys.argv[1]
-
-
-    channel.basic_publish(exchange='topic_logs', routing_key=key, body=message)
-
     producer = mqProducer(routing_key=key,exchange_name="Tech Lab Topic Exchange")
+    message = ticker + "price is now $" + price
+    producer.publishOrder(message)
 
 
     # Implement Logic To Create a message variable from the variable EG. "TSLA price is now $500" - Step 3
